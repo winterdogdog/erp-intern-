@@ -1,0 +1,64 @@
+<!--component html goes here -->
+<div class="print-page">
+    <div class="row wrapper border-bottom white-bg detail">
+        <div class="header">
+            <div class="icon_demart">
+                <img src="./assets/images/demart_icon.png">
+                <p class="demart"><b>Demart Network Technology (Kenya) Co.,Ltd</b></p>
+                <p>Demart,All is Guaranteed!</p>
+            </div>
+            <div class="deposit">
+                <p style="font-size:20px;font-weight:'bold'">DEPOSIT RECEIPT</p>
+                <p class="date"><b>Date:</b>&nbsp;{{date | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                <p><b>Receipt No:</b>&nbsp;[{{receipNo}}]</p>
+            </div>
+        </div>
+        <div class="body-print">
+            <div class="retailer-detail" style="margin-left:12%;">
+                <div>
+                    <label>Cell Phone Number:</label>
+                </div>
+                <div>{{accountNum}}</div>
+            </div>
+            <div class="retailer-detail">
+                <div>
+                    <label>Name:</label>
+                </div>
+                <div>{{retailerName}}</div>
+            </div>
+            <div class="retailer-detail">
+                <div>
+                    <label>Payment Method:</label>
+                </div>
+                <div>M-Pesa</div>
+            </div>
+            <div style="margin:25px 0;margin-left:12%;">
+                <span style="font: caption;font-size:20px;">Deposit Amount: </span><label class="ksh">KSH {{depositAmount | number:'.0-0'}}</label>
+            </div>
+            <div style="margin-left:12%;">
+                <div style="height: 27px; margin-right: 18%; background-color: #e5e3e3;">
+                    <div style="float:left;"><span style="font: caption;font-size:14px;">Credit Balance: </span><label style="font-size:16px;">KSH {{creditBalance | number:'.0-0'}}</label></div>
+                    <div style="float:right;"><span style="font: caption;font-size:14px;">Credit Limit: </span><label style="font-size:16px;">KSH {{creditLine | number:'.0-0'}}</label></div>
+                </div>
+            </div>
+            <div class="retailer-detail" style="margin-left:12%;">
+                <div>
+                    <label>Staff Badge Number:</label>
+                </div>
+                <div>{{staffNum}}</div>
+            </div>
+            <div class="retailer-detail">
+                <div>
+                    <label>Staff Name:</label>
+                </div>
+                <div>{{staffName}}</div>
+            </div>
+            <div class="retailer-detail">
+                <div>
+                    <label>Official Seal:</label>
+                </div>
+                <div>Demart</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,184 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Demart后台管理</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a>财务管理</a>
+            </li>
+            <li class="active">
+                <strong>押金管理</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+
+<!-- 所有数据表格 -->
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox-title">
+                <div class="form-inline">
+                    <div class="form-group" style="width: 100%">
+                        <div style="float: left;">
+                            <button [class.hidden]="!operations.includes('depositIn')" type="button" class="btn btn-w-m btn-danger" style="margin-bottom: 0px;" (click)="collect()">押金收取</button>
+                            <button [class.hidden]="!operations.includes('depositOut')" type="button" class="btn btn-w-m btn-success" style="margin-bottom: 0px;" (click)="return()">押金退还</button>
+                        </div>
+                        <div style="float: right;">
+                            <input pInputText placeholder="请输入姓名或者手机号码" [(ngModel)]="NameOrMobile" (keyup.enter)="onSearch($event)" class="form-control" style="border-radius: 5px;" />
+                            <button type="button" class="btn btn-w-m btn-primary" (click)="onSearch()" style="margin-bottom: 0px; margin-left: 2px;">搜索</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ibox-content ">
+                <div class="table-responsive ">
+                    <table class="table table-striped table-bordered table-hover dataTables-example" style="text-align: center;">
+                        <p-dataTable [value]="customs" selectionMode="single" [(selection)]="selectedCustom" [responsive]="true">
+                            <p-column field="retailerName" header="微商姓名" filters='ws' [style]="{'height':'35px'}"></p-column>
+                            <p-column field="mobile" header="联系方式"></p-column>
+                            <p-column field="amount" header="押金收取/退还金额">
+                                <ng-template let-detail="rowData" pTemplate="body">
+                                    <a style="color:red" *ngIf="detail.action === 1">-{{detail.amount | number:'.0-0'}}</a>
+                                    <a style="color:blue" *ngIf="detail.action === 0">+{{detail.amount | number:'.0-0'}}</a>
+                                </ng-template>
+                            </p-column>
+                            <p-column field="depositAmount" header="总押金">
+                                <ng-template let-detail="rowData" pTemplate="body">
+                                    {{detail.depositAmount | number:'.0-0'}}
+                                </ng-template>
+                            </p-column>
+                            <p-column field="creditBalance" header="可用信用额">
+                                <ng-template let-detail="rowData" pTemplate="body">
+                                    {{detail.creditBalance | number:'.0-0'}}
+                                </ng-template>
+                            </p-column>
+                            <p-column field="createTime" header="时间">
+                                <ng-template let-detail="rowData" pTemplate="body">
+                                    {{detail.createTime|date:'yyyy-MM-dd HH:mm:ss' }}
+                                </ng-template>
+                            </p-column>
+                            <p-column header="操作">
+                                <ng-template let-custom="rowData" let-i="rowIndex" pTemplate="body">
+                                    <button class=" btn btn-primary btn-sm" *ngIf="custom.action === 0"><a [routerLink]="['/financialmanager/print',custom.id]" target="_blank">打印</a></button>
+                                </ng-template>
+                            </p-column>
+                        </p-dataTable>
+                        <p-paginator #paginator [rows]="rowsOption" [totalRecords]="totalNum" [rowsPerPageOptions]="[10,20,30]" (onPageChange)="getAllRetailer()"></p-paginator>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 收取押金 -->
+<app-dialog #collectModal>
+    <form #customForm="ngForm">
+        <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="custom">
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="telenum">手机号</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="mobile" [(ngModel)]="custom.mobile" name="mobile" (blur)="check(custom.mobile)" [readonly]="state" />
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="name">微商姓名</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="name" [(ngModel)]="custom.retailerName" name="name" readOnly />
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="depositnow">收取押金</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="depositnow" [(ngModel)]="custom.amount" name="amount" required [readonly]="state" />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="deposittotal">总押金</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="deposittotal" [(ngModel)]="custom.depositAmount" name="deposittotal" readOnly />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="credit">可用信用额</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="credit" [(ngModel)]="custom.creditBalance" name="credit" readOnly />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="credit">流水号</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="code" name="code" [(ngModel)]="custom.code" required />
+            </div>
+            <div class="ui-grid-col-2">
+                <button class="btn btn-w-x btn-warning check" type="button" (click)="checkout()">校验</button>
+            </div>
+        </div>
+    </form>
+</app-dialog>
+<!-- /退还押金 -->
+<app-dialog #returnModal>
+    <form #customForm="ngForm">
+        <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="custom">
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="telenum">手机号</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="mobile" [(ngModel)]="custom.mobile" name="mobile" (blur)="check(custom.mobile)" required />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="name">微商姓名</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="name" [(ngModel)]="custom.retailerName" name="retailerName" readOnly />
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="depositnow">退还押金</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="depositnow" [(ngModel)]="custom.amount" name="amount" (blur)="checkMoney()" required />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="deposittotal">总押金</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="deposittotal" [(ngModel)]="custom.depositAmount" name="deposittotal" readOnly />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label for="credit">信用额</label>
+            </div>
+            <div class="ui-grid-col-5">
+                <input class="form-control" id="credit" [(ngModel)]="custom.creditBalance" name="credit" readOnly />
+            </div>
+        </div>
+    </form>
+</app-dialog>
+<p-growl [(value)]="msgs" class="dialog-center"></p-growl>

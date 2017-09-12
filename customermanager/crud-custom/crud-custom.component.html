@@ -1,0 +1,245 @@
+<app-dialog #editCustomerModal>
+  <form #customForm="ngForm">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="name">顾客姓名</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="name" [(ngModel)]="custom.customerName" name="customName" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="telenum">手机号</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="telenum" [(ngModel)]="custom.mobile" name="mobile" readonly />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="associated">关联微商</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="associated" [(ngModel)]="custom.retailerName" name="retailerName" readonly/>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="email">e-mail</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="email" [(ngModel)]="custom.email" name="email" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="address">居住地</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <select class="address1" [(ngModel)]="custom.country" name="country">
+          <option>{{custom.country}}</option>    
+          <option >Kenya</option>          
+            </select>
+        <select class="address1 " [ngModel]="custom.state" (ngModelChange)="custom.state=$event;updateSecondAddress(custom.state)"
+          name="state">
+          <option>{{custom.state}}</option>
+              <option *ngFor="let i of addressky.address" [value]="i.name">{{i.name}}</option>  
+            </select>
+        <select class="address1 " [ngModel]="custom.city" (ngModelChange)="custom.city=$event" name="city">
+              <option>{{custom.city}}</option>
+              <option *ngFor="let key of secondAddress" [value]="key.county">{{key.county}}</option>  
+            </select>
+      </div>
+    </div>
+
+  </form>
+</app-dialog>
+<app-dialog #addModal>
+  <form #addCustomForm="ngForm">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+      <div class="remind">
+        <span>提示：密码为手机号后6位</span>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="type">微商类型</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <select class="form-control" [(ngModel)]="retailer.mrType" name="retailerType">
+         <option *ngFor="let p of status;let i = index" [value]="p">{{neweditRetailer[p]}}</option>
+       </select>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="name">微商姓名</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" id="name" [(ngModel)]="retailer.retailerName" name="name" (blur)="check()" required/>
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="telenum">手机号</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" id="telenum" [(ngModel)]="mobile" name="telenum" (blur)="check()" [ngClass]="{'input-error': validateMobile === 2}" required/>
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="car">车牌号</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" id="car" [(ngModel)]="retailer.carNo" name="car" (blur)="check()" />
+      </div>
+    </div>
+
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="idnum">身份证号</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" id="idnum" [(ngModel)]="retailer.cardNumber" name="idnum" (blur)="check()" [ngClass]="{'input-error': validateCardnum === 2}" required/>
+      </div>
+    </div>
+
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="email">e-mail</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" id="email" [(ngModel)]="retailer.email" name="email" (blur)="check()" [ngClass]="{'input-error': validateEmail === 2}" required/>
+      </div>
+    </div>
+
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="address">居住地</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <select class="address1 " [(ngModel)]="retailer.country" name="country">
+              <option >Kenya</option>          
+            </select>
+        <select class="address1 " [ngModel]="retailer.state" (ngModelChange)="retailer.state=$event;updateSecondAddress(retailer.state)"
+          name="state">
+          <option>{{retailer.state}}</option>
+              <option *ngFor="let i of addressky.address" [value]="i.name">{{i.name}}</option>  
+            </select>
+        <select class="address1 " [ngModel]="retailer.city" (ngModelChange)="retailer.city=$event" name="city">
+          <option>{{retailer.city}}</option>    
+          <option *ngFor="let key of secondAddress" [value]="key.county">{{key.county}}</option>  
+            </select>
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="car">详细地址</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="car" [(ngModel)]="retailer.address" name="address" />
+      </div>
+    </div>
+
+  </form>
+</app-dialog>
+<app-dialog #editRetailerModal>
+  <form #customForm="ngForm">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="type">微商类型</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <select class="form-control" [(ngModel)]="retailer.mrType" name="retailerType">
+              <option *ngFor="let p of status;let i = index" [value]="p">{{neweditRetailer[p]}}</option>
+            </select>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="name">微商姓名</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="name" [(ngModel)]="retailer.retailerName" name="name" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="telenum">手机号</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="telenum" [(ngModel)]="retailer.mobile" name="telenum" readonly/>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="car">车牌号</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="car" [(ngModel)]="retailer.carNo" name="car" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="idnum">身份证号</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="idnum" [(ngModel)]="retailer.cardNumber" name="idnum" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="email">e-mail</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="email" [(ngModel)]="retailer.email" name="email" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="address">居住地</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <select class="address1" [(ngModel)]="retailer.country" name="country">
+          <option>{{retailer.country}}</option>    
+          <option >Kenya</option>          
+            </select>
+        <select class="address1" [ngModel]="retailer.state" (ngModelChange)="retailer.state=$event;updateSecondAddress(retailer.state)"
+          name="state">
+              <option>{{retailer.state}}</option>
+              <option *ngFor="let i of addressky.address" [value]="i.name">{{i.name}}</option>  
+            </select>
+        <select class="address1" [ngModel]="retailer.city" (ngModelChange)="retailer.city=$event" name="city">
+          <option>{{retailer.city}}</option>
+              <option *ngFor="let key of secondAddress" [value]="key.county">{{key.county}}</option>  
+            </select>
+      </div>
+    </div>
+
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        <label for="car">详细地址</label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input class="form-control" pInputText id="car" [(ngModel)]="retailer.address" name="address" />
+      </div>
+    </div>
+
+  </form>
+</app-dialog>
+<app-dialog #freezeModal></app-dialog>
+<app-dialog #unfreezeModal></app-dialog>
+<p-growl [(value)]="msgs"></p-growl>
